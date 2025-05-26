@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости услуг</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --gray: #adb5bd;
+            --gray-light: #e9ecef;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7ff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        
+        .calculator {
+            padding: 30px 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .input-group input:hover {
+            border-color: var(--gray);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--gray-light);
+            font-weight: 600;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .checkbox-item:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray);
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .checkbox-item label {
+            font-weight: 400;
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            background: linear-gradient(135deg, #f5f7ff, #e6e9ff);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-top: 30px;
+            border-left: 5px solid var(--primary);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .results h2 i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .result-value.currency::after {
+            content: ' ₽';
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .calculator {
+                padding: 25px 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Калькулятор стоимости услуг</h1>
+            <div class="description">
+                <p>Рассчитайте стоимость услуг для вашего товара: укажите габариты и количество, выберите дополнительные услуги и упаковку. В стоимость входит прием, хранение, подготовка и доставка до Маркетплейса в Москве и области.</p>
+            </div>
+        </header>
+        
+        <div class="calculator">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="length"><i class="fas fa-ruler-horizontal"></i> Длина (см)</label>
+                    <input type="number" id="length" min="1" step="1" placeholder="Например: 30" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="width"><i class="fas fa-ruler-vertical"></i> Ширина (см)</label>
+                    <input type="number" id="width" min="1" step="1" placeholder="Например: 20" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="height"><i class="fas fa-arrows-alt-v"></i> Высота (см)</label>
+                    <input type="number" id="height" min="1" step="1" placeholder="Например: 15" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="quantity"><i class="fas fa-boxes"></i> Количество</label>
+                    <input type="number" id="quantity" min="1" step="1" placeholder="Например: 100" required>
+                </div>
+            </div>
+            
+            <h3 class="section-title"><i class="fas fa-list-check"></i> Дополнительные услуги</h3>
+            <div class="checkbox-grid">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="defect-check" class="extra-service">
+                    <label for="defect-check">Проверка на брак по сложному ТЗ</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="kraft-paper" class="extra-service">
+                    <label for="kraft-paper">Заполнение короба крафт-бумагой</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="other-services" class="extra-service">
+                    <label for="other-services">Доп услуги (просушка/резинка/обвязка)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="kits-assembly" class="extra-service">
+                    <label for="kits-assembly">Сборка комплектов</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="new-tag" class="extra-service">
+                    <label for="new-tag">Прикрепление новой бирки</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="gift" class="extra-service">
+                    <label for="gift">Вложить подарок или флаер</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="thread-removal" class="extra-service">
+                    <label for="thread-removal">Удаление ниток на изделии</label>
+                </div>
+            </div>
+            
+            <h3 class="section-title"><i class="fas fa-box-open"></i> Упаковка</h3>
+            <div class="checkbox-grid">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="zip-bags" class="packaging">
+                    <label for="zip-bags">Zip пакеты-слайдеры с бегунком</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="bopp-bags" class="packaging">
+                    <label for="bopp-bags">БОПП пакеты</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shrink-wrap" class="packaging">
+                    <label for="shrink-wrap">Термоусадочная плёнка</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="bubble-wrap" class="packaging">
+                    <label for="bubble-wrap">Воздушно-пузырчатая пленка</label>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="calculate()">
+                <i class="fas fa-calculator"></i> Рассчитать стоимость
+            </button>
+            
+            <div class="results" id="results">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Результаты расчета</h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">Литры единицы товара</div>
+                        <div class="result-value" id="volume-per-unit">0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Стоимость за единицу</div>
+                        <div class="result-value currency" id="cost-per-unit">0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Общая стоимость</div>
+                        <div class="result-value currency" id="total-cost">0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Количество коробов</div>
+                        <div class="result-value" id="boxes-count">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Калькулятор стоимости услуг. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <script>
+        function calculate() {
+            // Получаем значения из полей ввода
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            
+            // Проверяем, что все обязательные поля заполнены
+            if (length <= 0 || width <= 0 || height <= 0 || quantity <= 0) {
+                alert('Пожалуйста, заполните все обязательные поля корректными значениями');
+                return;
+            }
+            
+            // Рассчитываем объем одной единицы товара в литрах (1 литр = 1000 см³)
+            const volumePerUnit = (length * width * height) / 1000;
+            
+            // Базовая стоимость за единицу
+            let costPerUnit = 50;
+            
+            // Добавляем стоимость дополнительных услуг
+            const extraServices = document.querySelectorAll('.extra-service:checked');
+            extraServices.forEach(service => {
+                // Разная стоимость для разных услуг
+                switch(service.id) {
+                    case 'defect-check':
+                        costPerUnit += 25;
+                        break;
+                    case 'kraft-paper':
+                        costPerUnit += 15;
+                        break;
+                    case 'kits-assembly':
+                        costPerUnit += 30;
+                        break;
+                    default:
+                        costPerUnit += 10;
+                }
+            });
+            
+            // Добавляем стоимость упаковки
+            const packaging = document.querySelectorAll('.packaging:checked');
+            packaging.forEach(pack => {
+                // Разная стоимость для разных видов упаковки
+                switch(pack.id) {
+                    case 'zip-bags':
+                        costPerUnit += 20;
+                        break;
+                    case 'shrink-wrap':
+                        costPerUnit += 25;
+                        break;
+                    default:
+                        costPerUnit += 15;
+                }
+            });
+            
+            // Рассчитываем общую стоимость
+            const totalCost = costPerUnit * quantity;
+            
+            // Рассчитываем количество коробов (примерная логика)
+            const boxesCount = Math.ceil((volumePerUnit * quantity) / 50);
+            
+            // Отображаем результаты
+            document.getElementById('volume-per-unit').textContent = volumePerUnit.toFixed(2);
+            document.getElementById('cost-per-unit').textContent = costPerUnit.toFixed(2);
+            document.getElementById('total-cost').textContent = totalCost.toFixed(2);
+            document.getElementById('boxes-count').textContent = boxesCount;
+            
+            // Показываем блок с результатами с анимацией
+            const results = document.getElementById('results');
+            results.classList.add('show');
+            
+            // Прокручиваем страницу к результатам
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Добавляем обработчики для инпутов, чтобы можно было нажимать Enter
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculate();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
